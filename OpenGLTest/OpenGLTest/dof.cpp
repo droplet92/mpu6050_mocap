@@ -166,7 +166,7 @@ EulerAngle Sensor::GetEulerAngleByGyro() const
 
 EulerAngle ComplementaryFilter::Filterate(const EulerAngle& accel, const EulerAngle& gyro)
 {
-    constexpr double gyro_gain = 0.80;
+    constexpr double gyro_gain = 0.98;
     constexpr double accel_gain = 1.0 - gyro_gain;
     static EulerAngle filtered_gyro = {};
     filtered_gyro += gyro;
