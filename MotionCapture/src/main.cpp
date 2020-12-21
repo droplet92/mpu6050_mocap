@@ -5,6 +5,7 @@
 #endif
 
 #include <glm.hpp>
+#include <gtx/string_cast.hpp>
 #include <gtc/type_ptr.hpp>
 using namespace glm;
 
@@ -12,7 +13,7 @@ using namespace glm;
 using namespace std;
 
 #include "Postbox.h"
-#include "dof.h"
+#include "Angles.h"
 
 void Init();
 void Quit();
@@ -37,6 +38,10 @@ EulerAngle e_angle;
 bool pause1 = false;
 bool pause2 = false;
 bool pause3 = false;
+
+bool testEulerRotation = false;
+bool useEulerRotation = true;
+bool useQuaternionRotation = false;
 
 
 int main(int argc, char* argv[])
@@ -69,9 +74,9 @@ int main(int argc, char* argv[])
 
 		if (elapsed > timestep && !pause)
 		{
-			if (!pause1) e_angle.yaw += 4.0f;
-			else if (!pause2) e_angle.pitch += 4.0f;
-			else if (!pause3) e_angle.roll += 4.0f;
+			if (!pause1) e_angle.yaw = int(e_angle.yaw + 4) % 360;
+			else if (!pause2) e_angle.pitch = int(e_angle.pitch + 4) % 360;
+			else if (!pause3) e_angle.roll = int(e_angle.roll + 4) % 360;
 			elapsed = 0;
 		}
 
@@ -88,7 +93,7 @@ int main(int argc, char* argv[])
 
 void Init()
 {
-	SocketIO::Postbox::instance().CalibrateSensor();
+	//SocketIO::Postbox::instance().CalibrateSensor();
 }
 
 void Quit()
@@ -144,16 +149,24 @@ void DrawCube()
 	glEnd();
 }
 
+// https://mathworld.wolfram.com/EulerAngles.html
 void EulerRotation(EulerAngle eulerAngles)
 {
-	glRotatef(eulerAngles.yaw, 1, 0, 0);	// yaw
-	glRotatef(eulerAngles.pitch, 0, 1, 0);	// pitch
-	glRotatef(eulerAngles.roll, 0, 0, 1);	// roll
+	cout << '(' << eulerAngles.yaw << ", " << eulerAngles.pitch << ", " << eulerAngles.roll << ')' << endl;
+	glRotated(eulerAngles.yaw, 1, 0, 0);	// yaw
+	glRotated(eulerAngles.pitch, 0, 1, 0);	// pitch
+	glRotated(eulerAngles.roll, 0, 0, 1);	// roll
 }
 
-void QuaternionRotation()
+// https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+// http://goldsequence.blogspot.com/2016/04/quaternion-based-rotation-in-opengl.html
+void QuaternionRotation(Quaternion q)
 {
-
+	cout << '(' << q.w << ", " << q.x << ", " << q.y << ", " << q.z << ')' << endl;
+	auto theta = acos(q.w) * 2.0;
+	auto norm = sqrt(q.x * q.x + q.y * q.y + q.z * q.z);
+	norm = norm ? norm : 1;
+	glRotated(theta * 180 / M_PI, q.x / norm, q.y * 180 / norm, q.z * 180 / norm);
 }
 
 void Render(GLFWwindow* window)
@@ -179,8 +192,12 @@ void Render(GLFWwindow* window)
 			sensor.GetEulerAngleByAccel(),
 			sensor.GetEulerAngleByGyro()
 		);
-		//if (!pause)	EulerRotation(e_angle);	// test for euler rotation
-		if (!pause) EulerRotation(euler_angle);
+		if (!pause)
+		{
+			if (testEulerRotation)			EulerRotation(e_angle);
+			else if (useEulerRotation)		EulerRotation(euler_angle);
+			else if (useQuaternionRotation)	QuaternionRotation(euler_angle);
+		}
 		DrawCube();
 	}
 	glPopMatrix();
@@ -195,6 +212,20 @@ void Keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 		case GLFW_KEY_ESCAPE:
 			glfwSetWindowShouldClose(window, GL_TRUE);
 			break;
+
+
+		case GLFW_KEY_T:
+			testEulerRotation = !testEulerRotation;
+			break;
+
+		case GLFW_KEY_E:
+			useEulerRotation = !useEulerRotation;
+			break;
+
+		case GLFW_KEY_Q:
+			useQuaternionRotation = !useQuaternionRotation;
+			break;
+
 
 		case GLFW_KEY_SPACE:
 			pause = !pause;

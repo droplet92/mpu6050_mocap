@@ -21,14 +21,11 @@
     <ClInclude Include="src\Postbox.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="src\dof.h">
+    <ClInclude Include="src\Angles.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\dof.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="src\glSetup.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -36,6 +33,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\Postbox.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Angles.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
