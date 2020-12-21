@@ -1,6 +1,6 @@
 #define _USE_MATH_DEFINES
 
-#include "dof.h"
+#include "Angles.h"
 #include <math.h>
 
 
@@ -61,6 +61,29 @@ EulerAngle EulerAngle::operator/=(double amount)
     yaw /= amount;
     return *this;
 }
+
+
+// https://ir.ymlib.yonsei.ac.kr/bitstream/22282913/136446/1/TA01434.pdf
+Quaternion::Quaternion(EulerAngle eulerAngle)
+{
+    constexpr double degrees_to_radians = M_PI / 180.0;
+    eulerAngle *= (degrees_to_radians / 2);
+    const EulerAngle cosAngle = { cos(eulerAngle.yaw), cos(eulerAngle.pitch), cos(eulerAngle.roll) };
+    const EulerAngle sinAngle = { sin(eulerAngle.yaw), sin(eulerAngle.pitch), sin(eulerAngle.roll) };
+
+    w = (cosAngle.roll * cosAngle.pitch * cosAngle.yaw
+        + sinAngle.roll * sinAngle.pitch * sinAngle.yaw);
+
+    x = (sinAngle.roll * cosAngle.pitch * cosAngle.yaw
+        - cosAngle.roll * sinAngle.pitch * sinAngle.yaw);
+
+    y = (cosAngle.roll * sinAngle.pitch * cosAngle.yaw
+        + sinAngle.roll * cosAngle.pitch * sinAngle.yaw);
+
+    z = (cosAngle.roll * cosAngle.pitch * sinAngle.yaw
+        - sinAngle.roll * sinAngle.pitch * cosAngle.yaw);
+}
+
 
 Vector3D::Vector3D(double x, double y, double z)
     : x(x)

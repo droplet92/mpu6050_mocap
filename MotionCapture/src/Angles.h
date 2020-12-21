@@ -18,6 +18,13 @@ struct EulerAngle
 	EulerAngle operator/=(double amount);
 };
 
+struct Quaternion
+{
+	double w, x, y, z;
+
+	Quaternion(EulerAngle eulerAngle);
+};
+
 struct Vector3D
 {
 	double x, y, z;
