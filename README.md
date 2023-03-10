@@ -9,4 +9,5 @@
 - MPU6050 GY-521 센서를 이용해 구현 / Implement it using MPU6050 GY-521, a inertial sensor
 
 ## 결과물 / Result
-[회지 / Article (PDF)](https://github.com/droplet92/mpu6050_mocap/blob/master/article/motion_capture.pdf)
+- [회지 / Article (PDF)](https://github.com/droplet92/mpu6050_mocap/blob/master/article/motion_capture.pdf)
+- 실행 파일은 우측의 Release 참조 / You can download executable files in release tab
