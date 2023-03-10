@@ -9,9 +9,6 @@
 #include <gtc/type_ptr.hpp>
 using namespace glm;
 
-#include <iostream>
-using namespace std;
-
 #include "Postbox.h"
 #include "Angles.h"
 
@@ -93,7 +90,7 @@ int main(int argc, char* argv[])
 
 void Init()
 {
-	//SocketIO::Postbox::instance().CalibrateSensor();
+	SocketIO::Postbox::instance().CalibrateSensor();
 }
 
 void Quit()
@@ -152,7 +149,6 @@ void DrawCube()
 // https://mathworld.wolfram.com/EulerAngles.html
 void EulerRotation(EulerAngle eulerAngles)
 {
-	cout << '(' << eulerAngles.yaw << ", " << eulerAngles.pitch << ", " << eulerAngles.roll << ')' << endl;
 	glRotated(eulerAngles.yaw, 1, 0, 0);	// yaw
 	glRotated(eulerAngles.pitch, 0, 1, 0);	// pitch
 	glRotated(eulerAngles.roll, 0, 0, 1);	// roll
@@ -162,7 +158,6 @@ void EulerRotation(EulerAngle eulerAngles)
 // http://goldsequence.blogspot.com/2016/04/quaternion-based-rotation-in-opengl.html
 void QuaternionRotation(Quaternion q)
 {
-	cout << '(' << q.w << ", " << q.x << ", " << q.y << ", " << q.z << ')' << endl;
 	auto theta = acos(q.w) * 2.0;
 	auto norm = sqrt(q.x * q.x + q.y * q.y + q.z * q.z);
 	norm = norm ? norm : 1;
